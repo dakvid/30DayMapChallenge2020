@@ -6,3 +6,5 @@ Separate metadata repository: https://github.com/dakvid/30DayMapChallenge2020Met
 
 Challenge home: https://github.com/tjukanovt/30DayMapChallenge/
 
+Based on my 2019 gallery: https://github.com/dakvid/30DayMapChallenge/
+
