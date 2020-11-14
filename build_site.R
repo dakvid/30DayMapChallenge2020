@@ -245,11 +245,12 @@ latest_challenge <-
   max() %>% 
   as.integer()
 
-num_fullN <- 
+num_per_person <- 
   classifications %>% 
   count(handle) %>% 
-  filter(n == latest_challenge) %>% 
-  nrow()
+  rename(num_maps = n) %>% 
+  count(num_maps) %>% 
+  rename(num_people = n)
 
 full30 <- 
   classifications %>% 
@@ -489,8 +490,16 @@ stats_page <-
                 #       )
                 #     })
                 # ),
-                p(glue("So far I've recorded {num_fullN} people submitting {latest_challenge} maps"),
-                  "leaving them on track for the magic 30."),
+                p("So far I have recorded",
+                  num_per_person %>% tail(1) %>% pull(num_people),
+                  "people submitting",
+                  num_per_person %>% tail(1) %>% pull(num_maps),
+                  "maps, and",
+                  num_per_person %>% tail(2) %>% head(1) %>% pull(num_people),
+                  "people submitting",
+                  num_per_person %>% tail(2) %>% head(1) %>% pull(num_maps),
+                  "maps, leaving them on track for the magic 30 at the end of the month.",
+                  "(Something I can't comprehend myself! 😀)"),
                 
                 # p(tags$em("I'll aim to identify the location of all the map authors, but haven't done that yet.")),
                 p("Currently",
@@ -1134,19 +1143,46 @@ maps_filter_cities_UZ <-
 
 # > Filter Topic -----------------------------------------------------------
 
-maps_filter_topics <- 
+maps_filter_topics_AF <- 
   div(class = "col-12@sm",
       div(class = "dropdown",
           tags$button(class = "btn btn-secondary dropdown-toggle",
                       type = "button",
-                      id = "FilterTopics",
+                      id = "FilterTopicsAF",
                       `data-toggle` = "dropdown",
                       `aria-haspopup` = "true",
                       `aria-expanded` = "false",
-                      "Topics"),
+                      "Topic A-F"),
           div(class = "dropdown-menu mapfilter-topic",
-              `aria-labelledby` = "FilterTopics",
+              `aria-labelledby` = "FilterTopicsAF",
               topics %>% 
+                filter(topics < "G", topics != "_") %>% 
+                pmap(function (topics, num_maps, ...) {
+                  tags$button(class = "dropdown-item d-flex justify-content-between align-items-center",
+                              type = "button",
+                              `data-value` = topics,
+                              if (topics == "_") { "unclassified" } else { topics },
+                              span(class = "badge badge-dark badge-pill",
+                                   num_maps))
+                })
+          )
+      )
+  )
+
+maps_filter_topics_GZ <- 
+  div(class = "col-12@sm",
+      div(class = "dropdown",
+          tags$button(class = "btn btn-secondary dropdown-toggle",
+                      type = "button",
+                      id = "FilterTopicsGZ",
+                      `data-toggle` = "dropdown",
+                      `aria-haspopup` = "true",
+                      `aria-expanded` = "false",
+                      "G-Z"),
+          div(class = "dropdown-menu mapfilter-topic",
+              `aria-labelledby` = "FilterTopicsGZ",
+              topics %>% 
+                filter(topics >= "G" | topics == "_") %>% 
                 pmap(function (topics, num_maps, ...) {
                   tags$button(class = "dropdown-item d-flex justify-content-between align-items-center",
                               type = "button",
@@ -1193,19 +1229,46 @@ maps_filter_types <-
 
 # > Filter Tool -----------------------------------------------------------
 
-maps_filter_tools <- 
+maps_filter_tools_AJ <- 
   div(class = "col-12@sm",
       div(class = "dropdown",
           tags$button(class = "btn btn-secondary dropdown-toggle",
                       type = "button",
-                      id = "FilterTools",
+                      id = "FilterToolsAJ",
                       `data-toggle` = "dropdown",
                       `aria-haspopup` = "true",
                       `aria-expanded` = "false",
-                      "Tools"),
+                      "Tool A-J"),
           div(class = "dropdown-menu mapfilter-tool",
-              `aria-labelledby` = "FilterTools",
+              `aria-labelledby` = "FilterToolsAJ",
               tools %>% 
+                filter(tools < "K", tools != "_") %>% 
+                pmap(function (tools, num_maps, ...) {
+                  tags$button(class = "dropdown-item d-flex justify-content-between align-items-center",
+                              type = "button",
+                              `data-value` = tools,
+                              if (tools == "_") { "unclassified" } else { tools },
+                              span(class = "badge badge-dark badge-pill",
+                                   num_maps))
+                })
+          )
+      )
+  )
+
+maps_filter_tools_KZ <- 
+  div(class = "col-12@sm",
+      div(class = "dropdown",
+          tags$button(class = "btn btn-secondary dropdown-toggle",
+                      type = "button",
+                      id = "FilterToolsKZ",
+                      `data-toggle` = "dropdown",
+                      `aria-haspopup` = "true",
+                      `aria-expanded` = "false",
+                      "K-Z"),
+          div(class = "dropdown-menu mapfilter-tool",
+              `aria-labelledby` = "FilterToolsKZ",
+              tools %>% 
+                filter(tools >= "K" | tools == "_") %>% 
                 pmap(function (tools, num_maps, ...) {
                   tags$button(class = "dropdown-item d-flex justify-content-between align-items-center",
                               type = "button",
@@ -1300,9 +1363,9 @@ maps_page <-
             maps_filter_cities_MO, maps_filter_cities_PR, maps_filter_cities_ST, maps_filter_cities_UZ,
             ),
         div(class = "row",
-            maps_filter_topics,
+            maps_filter_topics_AF, maps_filter_topics_GZ,
             maps_filter_types,
-            maps_filter_tools,
+            maps_filter_tools_AJ, maps_filter_tools_KZ,
             maps_search_handle,
             maps_reset_filters),
         div(class = "row",
