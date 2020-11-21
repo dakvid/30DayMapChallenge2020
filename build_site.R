@@ -15,8 +15,9 @@ library(cowplot)
 library(showtext)
 showtext_auto()
 
-font_add_google("Nunito Sans", "nunitosans")
-CHART_FONT <- "nunitosans"
+# font_add_google("Nunito Sans", "nunitosans")
+# CHART_FONT <- "nunitosans"
+CHART_FONT <- "Nunito Sans"
 
 BS_THEME <- "lux"
 source("_template.R", encoding = "UTF-8")
@@ -272,10 +273,17 @@ g_cartographers <-
   ggplot(g_cartographers_data,
          aes(x = location, y = n)) +
   geom_col() +
-  geom_text(data = g_cartographers_data,
+  geom_text(data = g_cartographers_data %>% 
+              filter(n > 9),
             aes(x = location, y = n, label = n),
-            hjust = 1, nudge_y = -3,
+            hjust = 1, nudge_y = -1,
             color = "white",
+            family = CHART_FONT) +
+  geom_text(data = g_cartographers_data %>% 
+              filter(n <= 9),
+            aes(x = location, y = n, label = n),
+            hjust = 1, nudge_y = 2,
+            color = "black",
             family = CHART_FONT) +
   coord_flip() +
   theme_minimal_vgrid(font_family = CHART_FONT) +
@@ -290,14 +298,20 @@ g_challenges_data <-
   classifications %>% 
   inner_join(challenges, by = "Day") %>% 
   mutate(challenge = paste(Day, Challenge)) %>% 
-  count(challenge) %>% 
-  mutate(challenge = challenge %>% fct_inorder() %>% fct_rev())
+  count(Day, challenge) %>% 
+  filter(Day <= 20) %>% 
+  mutate(challenge = challenge %>% fct_inorder() %>% fct_rev(),
+         n_display = if_else(Day == "19", 0L, n))
+num_null_challenge <- 
+  g_challenges_data %>% 
+  filter(Day == "19") %>% 
+  pull(n)
 g_challenges <- 
   ggplot(g_challenges_data,
-         aes(x = challenge, y = n)) +
+         aes(x = challenge, y = n_display)) +
   geom_col() + 
   geom_text(data = g_challenges_data,
-            aes(x = challenge, y = n, label = n),
+            aes(x = challenge, y = n_display, label = n),
             hjust = 1, nudge_y = -3,
             color = "white",
             family = CHART_FONT) +
@@ -327,10 +341,17 @@ g_countries <-
   geom_col(data = g_countries_data,
            aes(x = area, y = num_people),
            fill = "orange", width = 0.3) +
-  geom_text(data = g_countries_data,
+  geom_text(data = g_countries_data %>% 
+              filter(num_maps > 15),
             aes(x = area, y = num_maps, label = num_maps),
             hjust = 1, nudge_y = -1,
             color = "white",
+            family = CHART_FONT) +
+  geom_text(data = g_countries_data %>% 
+              filter(num_maps <= 15),
+            aes(x = area, y = num_maps, label = num_maps),
+            hjust = 1, nudge_y = 3,
+            color = "black",
             family = CHART_FONT) +
   coord_flip() +
   theme_minimal_vgrid(font_family = CHART_FONT) +
@@ -354,10 +375,17 @@ g_cities <-
   geom_col(data = g_cities_data,
            aes(x = city, y = num_people),
            fill = "orange", width = 0.3) +
-  geom_text(data = g_cities_data,
+  geom_text(data = g_cities_data %>% 
+              filter(num_maps > 7),
             aes(x = city, y = num_maps, label = num_maps),
-            hjust = 1, nudge_y = -1,
+            hjust = 1, nudge_y = -0.5,
             color = "white",
+            family = CHART_FONT) +
+  geom_text(data = g_cities_data %>% 
+              filter(num_maps <= 7),
+            aes(x = city, y = num_maps, label = num_maps),
+            hjust = 1, nudge_y = 0.5,
+            color = "black",
             family = CHART_FONT) +
   coord_flip() +
   theme_minimal_vgrid(font_family = CHART_FONT) +
@@ -381,10 +409,17 @@ g_tools <-
   geom_col(data = g_tools_data,
            aes(x = tools, y = num_people),
            fill = "orange", width = 0.3) +
-  geom_text(data = g_tools_data,
+  geom_text(data = g_tools_data %>% 
+              filter(num_maps > 50),
             aes(x = tools, y = num_maps, label = num_maps),
-            hjust = 1, nudge_y = -1,
+            hjust = 1, nudge_y = -2,
             color = "white",
+            family = CHART_FONT) +
+  geom_text(data = g_tools_data %>% 
+              filter(num_maps <= 50),
+            aes(x = tools, y = num_maps, label = num_maps),
+            hjust = 1, nudge_y = 18,
+            color = "black",
             family = CHART_FONT) +
   coord_flip() +
   theme_minimal_vgrid(font_family = CHART_FONT) +
@@ -408,10 +443,17 @@ g_topics <-
   geom_col(data = g_topics_data,
            aes(x = topics, y = num_people),
            fill = "orange", width = 0.3) +
-  geom_text(data = g_topics_data,
+  geom_text(data = g_topics_data %>% 
+              filter(num_maps > 15),
             aes(x = topics, y = num_maps, label = num_maps),
             hjust = 1, nudge_y = -1,
             color = "white",
+            family = CHART_FONT) +
+  geom_text(data = g_topics_data %>% 
+              filter(num_maps <= 15),
+            aes(x = topics, y = num_maps, label = num_maps),
+            hjust = 1, nudge_y = 2,
+            color = "black",
             family = CHART_FONT) +
   coord_flip() +
   theme_minimal_vgrid(font_family = CHART_FONT) +
@@ -435,10 +477,17 @@ g_types <-
   geom_col(data = g_types_data,
            aes(x = types, y = num_people),
            fill = "orange", width = 0.3) +
-  geom_text(data = g_types_data,
+  geom_text(data = g_types_data %>% 
+              filter(num_maps > 10),
             aes(x = types, y = num_maps, label = num_maps),
-            hjust = 1, nudge_y = -1,
+            hjust = 1, nudge_y = -0.5,
             color = "white",
+            family = CHART_FONT) +
+  geom_text(data = g_types_data %>% 
+              filter(num_maps <= 10),
+            aes(x = types, y = num_maps, label = num_maps),
+            hjust = 1, nudge_y = 0.5,
+            color = "black",
             family = CHART_FONT) +
   coord_flip() +
   theme_minimal_vgrid(font_family = CHART_FONT) +
@@ -475,6 +524,8 @@ stats_page <-
 
                 h3("Daily Challenges"),
                 img(src = "images/challenge_count.png", style="width: 800px;"),
+                p("Just kidding - there were", num_null_challenge,
+                  "maps for Day 19. 🤡"),
                 
                 h3("People"),
                 # p(glue("There were {nrow(full30)} people who managed the massive task of creating all 30 maps!"),
