@@ -299,7 +299,6 @@ g_challenges_data <-
   inner_join(challenges, by = "Day") %>% 
   mutate(challenge = paste(Day, Challenge)) %>% 
   count(Day, challenge) %>% 
-  filter(Day <= 20) %>% 
   mutate(challenge = challenge %>% fct_inorder() %>% fct_rev(),
          n_display = if_else(Day == "19", 0L, n))
 num_null_challenge <- 
