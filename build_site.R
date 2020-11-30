@@ -15,9 +15,9 @@ library(cowplot)
 library(showtext)
 showtext_auto()
 
-# font_add_google("Nunito Sans", "nunitosans")
-# CHART_FONT <- "nunitosans"
-CHART_FONT <- "Nunito Sans"
+font_add_google("Nunito Sans", "nunitosans")
+CHART_FONT <- "nunitosans"
+# CHART_FONT <- "Nunito Sans"
 
 BS_THEME <- "lux"
 source("_template.R", encoding = "UTF-8")
