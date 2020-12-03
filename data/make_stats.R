@@ -38,6 +38,7 @@ write_csv(country_map_data, "../30DayMapChallenge2020Metadata/stats/country_map_
 
 map_list <- 
   maps %>% 
+  sample_frac(1) %>% 
   inner_join(classifications, by = c("handle", "Day")) %>% 
   inner_join(images, by = c("handle", "Day")) %>% 
   inner_join(cartographers, by = "handle") %>% 
@@ -52,6 +53,6 @@ map_list <-
             Types = types %>% str_replace('^_$', '') %>% str_replace_all(',', ', '),
             Tools = tools %>% str_replace('^_$', '') %>% str_replace_all(',', ', '))
 
-write_tsv(map_list, "data/map_list_for_table.tsv")
+write_csv(map_list, "data/map_list_for_table.csv")
 
 
