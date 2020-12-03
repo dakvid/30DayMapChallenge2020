@@ -538,31 +538,30 @@ stats_page <-
                 img(src = "images/submission_count.png", style="width: 800px;"),
 
                 h3("People"),
-                # p(glue("There were {nrow(full30)} people who managed the massive task of creating all 30 maps!"),
-                #   "(If you're not on this list and should be then let me know.)"),
-                # tags$ul(
-                #   full30 %>%
-                #     pmap(function(handle, username, realname, location, ...) {
-                #       tags$li(
-                #         if (is.na(realname)) { username } else { realname },
-                #         "-",
-                #         a(href = glue("https://twitter.com/{handle}/"), glue("@{handle}")),
-                #         if (!is.na(location)) { glue("- in {location}") }
-                #       )
-                #     })
-                # ),
-                p("So far I have recorded",
-                  num_per_person %>% tail(1) %>% pull(num_people),
-                  "people submitting",
-                  num_per_person %>% tail(1) %>% pull(num_maps),
-                  "maps, and",
-                  num_per_person %>% tail(2) %>% head(1) %>% pull(num_people),
-                  "people submitting",
-                  num_per_person %>% tail(2) %>% head(1) %>% pull(num_maps),
-                  "maps, leaving them on track for the magic 30 at the end of the month.",
-                  "(Something I can't comprehend myself! 😀)"),
+                p(glue("There were {nrow(full30)} people who managed the massive task of creating all 30 maps!"),
+                  "(If you're not on this list and should be then let me know.)"),
+                tags$ul(
+                  full30 %>%
+                    pmap(function(handle, username, realname, location, ...) {
+                      tags$li(
+                        if (is.na(realname)) { username } else { realname },
+                        "-",
+                        a(href = glue("https://twitter.com/{handle}/"), glue("@{handle}")),
+                        if (!is.na(location)) { glue("- in {location}") }
+                      )
+                    })
+                ),
+                # p("So far I have recorded",
+                #   num_per_person %>% tail(1) %>% pull(num_people),
+                #   "people submitting",
+                #   num_per_person %>% tail(1) %>% pull(num_maps),
+                #   "maps, and",
+                #   num_per_person %>% tail(2) %>% head(1) %>% pull(num_people),
+                #   "people submitting",
+                #   num_per_person %>% tail(2) %>% head(1) %>% pull(num_maps),
+                #   "maps, leaving them on track for the magic 30 at the end of the month.",
+                #   "(Something I can't comprehend myself! 😀)"),
                 
-                # p(tags$em("I'll aim to identify the location of all the map authors, but haven't done that yet.")),
                 p("Currently",
                   span(class = "text-danger", glue("only {round(100 - pc_unc_cartloc, 1)}%")),
                   "of cartographers have a country assigned to them."),
