@@ -240,12 +240,6 @@ pc_unc_type <- round(num_unc_type / num_maps * 100, 1)
 num_unc_tool <- classifications %>% filter(tools == "_") %>% nrow()
 pc_unc_tool <- round(num_unc_tool / num_maps * 100, 1)
 
-latest_challenge <- 
-  classifications %>% 
-  pull(Day) %>% 
-  max() %>% 
-  as.integer()
-
 num_per_person <- 
   classifications %>% 
   count(handle) %>% 
@@ -299,30 +293,50 @@ g_challenges_data <-
   inner_join(challenges, by = "Day") %>% 
   mutate(challenge = paste(Day, Challenge)) %>% 
   count(Day, challenge) %>% 
-  mutate(challenge = challenge %>% fct_inorder() %>% fct_rev(),
-         n_display = if_else(Day == "19", 0L, n))
-num_null_challenge <- 
-  g_challenges_data %>% 
-  filter(Day == "19") %>% 
-  pull(n)
+  mutate(challenge = challenge %>% fct_inorder() %>% fct_rev())
 g_challenges <- 
   ggplot(g_challenges_data,
-         aes(x = challenge, y = n_display)) +
+         aes(x = challenge, y = n)) +
   geom_col() + 
   geom_text(data = g_challenges_data,
-            aes(x = challenge, y = n_display, label = n),
+            aes(x = challenge, y = n, label = n),
             hjust = 1, nudge_y = -3,
             color = "white",
             family = CHART_FONT) +
   coord_flip() +
   theme_minimal_vgrid(font_family = CHART_FONT) +
   labs(x = NULL, y = NULL,
-       title = "People who completed each daily map (so far)")
+       title = "People who completed each daily map")
 ggsave(filename = "challenge_count.png",
        path = "images/",
        plot = g_challenges,
        width = 7, height = 5.5, units = "cm", scale = 3)
 
+g_num_per_person_data <- 
+  num_per_person %>% 
+  mutate(num_maps = num_maps %>% as.character() %>% fct_inorder())
+g_num_per_person <- 
+  ggplot(g_num_per_person_data,
+         aes(x = num_maps, y = num_people)) +
+  geom_col() +
+  geom_text(data = g_num_per_person_data %>% filter(num_people >= 5),
+            aes(x = num_maps, y = num_people, label = num_people),
+            hjust = 1, nudge_y = -1,
+            color = "white",
+            family = CHART_FONT) +
+  geom_text(data = g_num_per_person_data %>% filter(num_people < 5),
+            aes(x = num_maps, y = num_people, label = num_people),
+            hjust = 1, nudge_y = 3,
+            color = "black",
+            family = CHART_FONT) +
+  coord_flip() +
+  theme_minimal_vgrid(font_family = CHART_FONT) +
+  labs(x = "Number of Maps Completed", y = "Number of People",
+       title = "How many maps did people complete?")
+ggsave(filename = "submission_count.png",
+       path = "images/",
+       plot = g_num_per_person,
+       width = 7, height = 5.5, units = "cm", scale = 3)
 
 g_countries_data <- 
   bind_rows(
@@ -349,7 +363,7 @@ g_countries <-
   geom_text(data = g_countries_data %>% 
               filter(num_maps <= 15),
             aes(x = area, y = num_maps, label = num_maps),
-            hjust = 1, nudge_y = 3,
+            hjust = 1, nudge_y = 6,
             color = "black",
             family = CHART_FONT) +
   coord_flip() +
@@ -512,8 +526,6 @@ stats_page <-
                        "people tweeting on the hashtag. ",
                        "Currently I've indexed {num_maps} maps ",
                        "by {num_indexed_cartographers} people.")),
-                p("Maps won't appear automatically - there will be a bit of a lag",
-                  "but they'll end up here eventually."),
                 h3("Progress"),
                 p("Every map that appears here has been assigned a day/challenge",
                   "by me but the majority of the other classifications will take",
@@ -523,9 +535,8 @@ stats_page <-
 
                 h3("Daily Challenges"),
                 img(src = "images/challenge_count.png", style="width: 800px;"),
-                p("Just kidding - there were", num_null_challenge,
-                  "maps for Day 19. 🤡"),
-                
+                img(src = "images/submission_count.png", style="width: 800px;"),
+
                 h3("People"),
                 # p(glue("There were {nrow(full30)} people who managed the massive task of creating all 30 maps!"),
                 #   "(If you're not on this list and should be then let me know.)"),
@@ -567,7 +578,18 @@ stats_page <-
                   "The small orange bar is the number of cartographers who have produced the maps in that area."),
                 img(src = "images/area_count.png", style="width: 800px;"),
                 img(src = "images/city_count.png", style="width: 800px;"),
-                
+                tags$iframe(
+                    title="Maps from #30DayMapChallenge 2020 by country",
+                    `aria-label`="Map",
+                    id="datawrapper-chart-D1Xt6",
+                    src="https://datawrapper.dwcdn.net/D1Xt6/1/",
+                    scrolling="no",
+                    frameborder="0",
+                    style="width: 0; min-width: 100% !important; border: none;",
+                    height="566"),
+                tags$script(
+                    type="text/javascript",
+                    '!function(){"use strict";window.addEventListener("message",(function(a){if(void 0!==a.data["datawrapper-height"])for(var e in a.data["datawrapper-height"]){var t=document.getElementById("datawrapper-chart-"+e)||document.querySelector("iframe[src*=\'"+e+"\']");t&&(t.style.height=a.data["datawrapper-height"][e]+"px")}}))}();'),
                 h3("Tools"),
                 p("Currently",
                   span(class = "text-danger", glue("only {round(100 - pc_unc_tool, 1)}%")),
