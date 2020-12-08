@@ -34,6 +34,20 @@ write_csv(country_map_data, "../30DayMapChallenge2020Metadata/stats/country_map_
 
 
 
+cartographer_map_data <- 
+  cartographers %>% 
+  count(country) %>% 
+  inner_join(coords_countries,
+             by = c(country = "name")) %>% 
+  select(
+    Lat = latitude,
+    Long = longitude,
+    Country = country,
+    `Number of Maps` = n
+  )
+
+write_csv(cartographer_map_data, "../30DayMapChallenge2020Metadata/stats/cartographer_map_data.csv")
+
 # Tables ------------------------------------------------------------------
 
 map_list <- 
