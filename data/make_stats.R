@@ -115,5 +115,7 @@ day_matrix <-
   filter(date_utc > "2020-10-15",
          date_utc < "2020-12-08")
 
-write_csv(day_matrix, "data/day_matrix_for_heatmap.csv")
+write_csv(day_matrix,
+          "data/day_matrix_for_heatmap.csv",
+          na = "")
 
