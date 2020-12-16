@@ -1,4 +1,4 @@
-date_utc,01,02,03,04,05,06,07,08,09,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30
+date_utc,01 - Points,02 - Lines,03 - Polygons,04 - Hexagons,05 - Blue,06 - Red,07 - Green,08 - Yellow,09 - Monochrome,10 - Grid,11 - 3D,12 - Non-GIS,13 - Raster,14 - Climate change,15 - Connections,16 - Islands,17 - Historical,18 - Land use,19 - NULL,20 - Population,21 - Water,22 - Movement,23 - Boundaries,24 - Elevation,25 - COVID-19,26 - New tool,27 - Big/small data,28 - Non-geographic,29 - Globe,30 - A map
 2020-10-31,4,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 2020-11-01,280,4,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 2020-11-02,112,301,16,,,,,,,,,,,,,,,,,,,,,,,,,,,

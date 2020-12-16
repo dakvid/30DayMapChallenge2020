@@ -105,8 +105,10 @@ write_csv(map_list, "data/map_list_for_table.csv")
 
 day_matrix <- 
   maps %>% 
+  inner_join(challenges,
+             by = "Day") %>% 
   transmute(date_utc = date_posted %>% str_sub(1, 10),
-            Day) %>% 
+            Day = glue("{Day} - {Challenge}")) %>% 
   count(date_utc, Day) %>% 
   arrange(Day, date_utc) %>% 
   pivot_wider(names_from = "Day",
